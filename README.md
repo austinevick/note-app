@@ -1,5 +1,7 @@
 # fox_note_app
 
+![](https://github.com/austinevick/note-app/blob/main/screenshots/Screenshot_1631416068.png)
+
 A new Flutter project.
 
 ## Getting Started
