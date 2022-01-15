@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ConfirmationBottomSheet {
-  static buildBottomSheet(BuildContext context, Function onPressed,
+  static buildBottomSheet(BuildContext context, VoidCallback? onPressed,
           String title, String content) =>
       showBarModalBottomSheet(
         shape: OutlineInputBorder(
@@ -40,19 +40,19 @@ class ConfirmationBottomSheet {
           ]),
         ),
       );
-  static buildButton({Function onPressed, String text}) => Expanded(
+  static buildButton({VoidCallback? onPressed, String? text}) => Expanded(
         child: Container(
           decoration: BoxDecoration(
               border: Border(
-                  left: BorderSide(color: Colors.grey[300]),
-                  top: BorderSide(color: Colors.grey[300]))),
+                  left: BorderSide(color: Colors.grey[300]!),
+                  top: BorderSide(color: Colors.grey[300]!))),
           child: TextButton(
               style: ButtonStyle(
                 padding: MaterialStateProperty.all(EdgeInsets.all(15)),
               ),
               onPressed: onPressed,
               child: Text(
-                text,
+                text!,
                 style: TextStyle(fontSize: 18),
               )),
         ),

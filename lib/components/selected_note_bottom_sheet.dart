@@ -4,10 +4,10 @@ import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:share/share.dart';
 
 class SelectedNoteBottomSheet extends StatelessWidget {
-  final NoteProvider provider;
-  final Note note;
+  final NoteProvider? provider;
+  final Note? note;
 
-  SelectedNoteBottomSheet({Key key, this.provider, this.note})
+  SelectedNoteBottomSheet({Key? key, this.provider, this.note})
       : super(key: key);
   final style = TextStyle(color: Colors.black, fontSize: 18);
   @override
@@ -19,7 +19,7 @@ class SelectedNoteBottomSheet extends StatelessWidget {
         children: [
           ListTile(
             onTap: () async {
-              await Share.share("${note.title}\n${note.content}");
+              await Share.share("${note!.title}\n${note?.content}");
             },
             leading: Icon(Icons.share),
             title: Text('Share Note', style: style),
@@ -27,14 +27,14 @@ class SelectedNoteBottomSheet extends StatelessWidget {
           ListTile(
               onTap: () {
                 Navigator.of(context).pop();
-                provider.deleteNote(note.id);
+                provider!.deleteNote(note!.id!);
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   behavior: SnackBarBehavior.floating,
                   action: SnackBarAction(
                       textColor: Colors.white,
                       label: 'UNDO',
                       onPressed: () {
-                        provider.restoreNote(note);
+                        provider!.restoreNote(note!);
                       }),
                   content: Text('Task successfully deleted',
                       style: TextStyle(color: Colors.white)),

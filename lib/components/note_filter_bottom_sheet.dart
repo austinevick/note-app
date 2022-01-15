@@ -4,13 +4,13 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class NoteFilterBottomSheet {
   static buildNoteFilterBottomSheet(
-      {BuildContext context, NoteProvider provider}) {
+      {BuildContext? context, NoteProvider? provider}) {
     return showBarModalBottomSheet(
         shape: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        context: context,
+        context: context!,
         builder: (ctx) => Container(
               height: 145,
               child: Column(
@@ -27,12 +27,12 @@ class NoteFilterBottomSheet {
                     child: Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              bottom: BorderSide(color: Colors.grey[300]),
-                              top: BorderSide(color: Colors.grey[300]))),
+                              bottom: BorderSide(color: Colors.grey[300]!),
+                              top: BorderSide(color: Colors.grey[300]!))),
                       width: double.infinity,
                       child: TextButton(
                           onPressed: () {
-                            provider.setIndexToZero();
+                            provider!.setIndexToZero();
                             Navigator.of(context).pop();
                           },
                           child: Text(
@@ -52,12 +52,12 @@ class NoteFilterBottomSheet {
                     child: Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              bottom: BorderSide(color: Colors.grey[300]),
-                              top: BorderSide(color: Colors.grey[300]))),
+                              bottom: BorderSide(color: Colors.grey[300]!),
+                              top: BorderSide(color: Colors.grey[300]!))),
                       width: double.infinity,
                       child: TextButton(
                           onPressed: () {
-                            provider.setIndexToOne();
+                            provider!.setIndexToOne();
                             Navigator.of(context).pop();
                           },
                           child: Text(

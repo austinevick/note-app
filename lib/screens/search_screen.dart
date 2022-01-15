@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'new_note_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key key}) : super(key: key);
+  const SearchScreen({Key? key}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -44,11 +44,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   text: query,
                   onChanged: (value) {
                     final notes = noteList.where((note) {
-                      final title = note.title.toLowerCase();
-                      final content = note.content.toLowerCase();
+                      final title = note.title?.toLowerCase();
+                      final content = note.content?.toLowerCase();
                       final searchTerms = value.toLowerCase();
-                      return title.contains(searchTerms) ||
-                          content.contains(searchTerms);
+                      return title!.contains(searchTerms) ||
+                          content!.contains(searchTerms);
                     }).toList();
                     setState(() {
                       this.query = value;
@@ -80,16 +80,16 @@ class _SearchScreenState extends State<SearchScreen> {
                               height: 8,
                               width: 8,
                               decoration: BoxDecoration(
-                                  color: note.isImportant
+                                  color: note.isImportant!
                                       ? Color(0x0fffd6a02)
                                       : Colors.grey,
                                   borderRadius: BorderRadius.circular(50)),
                             ),
                           ),
-                          title: Text(note.title,
+                          title: Text(note.title!,
                               style: TextStyle(
                                   fontSize: 19, fontWeight: FontWeight.bold)),
-                          subtitle: Text(note.content,
+                          subtitle: Text(note.content!,
                               style: TextStyle(fontSize: 18)),
                         ),
                         Divider()

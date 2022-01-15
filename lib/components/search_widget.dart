@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SearchWidget extends StatefulWidget {
-  final String text;
-  final ValueChanged<String> onChanged;
-  final String hintText;
+  final String? text;
+  final ValueChanged<String>? onChanged;
+  final String? hintText;
 
   const SearchWidget({
-    Key key,
+    Key? key,
     this.text,
     this.onChanged,
     this.hintText,
@@ -23,7 +23,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   Widget build(BuildContext context) {
     final styleActive = TextStyle(color: Colors.black);
     final styleHint = TextStyle(color: Colors.black54);
-    final style = widget.text.isEmpty ? styleHint : styleActive;
+    final style = widget.text!.isEmpty ? styleHint : styleActive;
 
     return Container(
       height: 60,
@@ -37,12 +37,12 @@ class _SearchWidgetState extends State<SearchWidget> {
                 icon: Icon(Icons.keyboard_backspace,
                     color: Colors.black, size: 28),
                 onPressed: () => Navigator.of(context).pop()),
-            suffixIcon: widget.text.isNotEmpty
+            suffixIcon: widget.text!.isNotEmpty
                 ? IconButton(
                     icon: Icon(Icons.close, color: style.color),
                     onPressed: () {
                       controller.clear();
-                      widget.onChanged('');
+                      widget.onChanged!('');
                       FocusScope.of(context).requestFocus(FocusNode());
                     },
                   )

@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 import 'new_note_screen.dart';
 
 class NoteListScreen extends StatefulWidget {
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
-  const NoteListScreen({Key key, this.scrollController}) : super(key: key);
+  const NoteListScreen({Key? key, this.scrollController}) : super(key: key);
 
   @override
   _NoteListScreenState createState() => _NoteListScreenState();
@@ -21,7 +21,7 @@ class NoteListScreen extends StatefulWidget {
 class _NoteListScreenState extends State<NoteListScreen> {
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
       NotePreferences.loadNoteListView();
     });
 

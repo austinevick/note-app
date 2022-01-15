@@ -1,9 +1,9 @@
 class Note {
-  int id;
-  final String title;
-  final String content;
-  final DateTime dateCreated;
-  final bool isImportant;
+  int? id;
+  final String? title;
+  final String? content;
+  final DateTime? dateCreated;
+  final bool? isImportant;
 
   Note({this.content, this.isImportant, this.dateCreated, this.id, this.title});
 
@@ -22,8 +22,8 @@ class Note {
       'id': this.id,
       'title': this.title,
       'content': this.content,
-      'isImportant': this.isImportant ? 0 : 1,
-      'dateCreated': this.dateCreated.toIso8601String(),
+      'isImportant': this.isImportant! ? 0 : 1,
+      'dateCreated': this.dateCreated?.toIso8601String(),
     };
   }
 }

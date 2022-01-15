@@ -32,7 +32,7 @@ class NoteProvider with ChangeNotifier {
       noteList.where((note) => note.isImportant == true).toList();
 
   void createNote(Note note) async {
-    if (note.title.isEmpty && note.content.isEmpty) return;
+    if (note.title!.isEmpty && note.content!.isEmpty) return;
     await databaseHelper.saveNote(note);
     Fluttertoast.showToast(msg: 'Note added');
     notifyListeners();

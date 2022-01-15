@@ -12,8 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 class NewNoteScreen extends StatefulWidget {
-  final Note note;
-  const NewNoteScreen({Key key, this.note}) : super(key: key);
+  final Note? note;
+  const NewNoteScreen({Key? key, this.note}) : super(key: key);
   @override
   _NewNoteScreenState createState() => _NewNoteScreenState();
 }
@@ -39,9 +39,9 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
 
   void init() {
     if (widget.note != null) {
-      contentController.text = widget.note.content;
-      titleController.text = widget.note.title;
-      isImportant = widget.note.isImportant;
+      contentController.text = widget.note!.content!;
+      titleController.text = widget.note!.title!;
+      isImportant = widget.note!.isImportant!;
     }
   }
 
@@ -103,7 +103,9 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
             return true;
           },
           child: Scaffold(
-              appBar: buildAppBar(provider),
+              appBar: PreferredSize(
+                  child: buildAppBar(provider),
+                  preferredSize: const Size(60, 60)),
               backgroundColor: colors[NotePreferences.selectedColor],
               body: NoteFormField(
                   selectedIndex: colors[NotePreferences.selectedColor],
@@ -118,7 +120,7 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
   String shareNote() {
     if (widget.note == null)
       return "${titleController.text}\n${contentController.text}";
-    return "${widget.note.title}\n${widget.note.content}";
+    return "${widget.note!.title}\n${widget.note!.content}";
   }
 
   void submit(NoteProvider provider) {
@@ -131,7 +133,7 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
         isImportant: isImportant,
         dateCreated: DateTime.now());
     if (widget.note != null) {
-      note.id = widget.note.id;
+      note.id = widget.note!.id;
       provider.updateNote(note);
     } else {
       provider.createNote(note);

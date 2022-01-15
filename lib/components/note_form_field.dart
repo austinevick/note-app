@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:fox_note_app/model/note.dart';
 
 class NoteFormField extends StatelessWidget {
-  final TextEditingController titleController;
-  final TextEditingController contentController;
-  final Color selectedIndex;
-  final Note note;
+  final TextEditingController? titleController;
+  final TextEditingController? contentController;
+  final Color? selectedIndex;
+  final Note? note;
 
   const NoteFormField(
-      {Key key,
+      {Key? key,
       this.titleController,
       this.contentController,
       this.note,
