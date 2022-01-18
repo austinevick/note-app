@@ -1,3 +1,12 @@
+List<String> category = [
+  'Personal',
+  'Work',
+  'Business',
+  'Travel',
+  'Sermon',
+  'Sport'
+];
+
 class Note {
   int? id;
   final String? title;
@@ -34,5 +43,28 @@ class Note {
       'isImportant': this.isImportant! ? 0 : 1,
       'dateCreated': this.dateCreated?.toIso8601String(),
     };
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Note &&
+        other.id == id &&
+        other.title == title &&
+        other.content == content &&
+        other.dateCreated == dateCreated &&
+        other.category == category &&
+        other.isImportant == isImportant;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        title.hashCode ^
+        content.hashCode ^
+        dateCreated.hashCode ^
+        category.hashCode ^
+        isImportant.hashCode;
   }
 }

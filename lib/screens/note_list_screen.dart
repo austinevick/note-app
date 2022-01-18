@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:fox_note_app/components/note_filter_bottom_sheet.dart';
+import 'package:fox_note_app/components/category_cards.dart';
+import 'package:fox_note_app/components/empty_note_body.dart';
 import 'package:fox_note_app/components/note_list.dart';
+import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:fox_note_app/screens/search_screen.dart';
-import 'package:fox_note_app/utils/note_prefs.dart';
 import 'package:provider/provider.dart';
 
 import 'new_note_screen.dart';
 
 class NoteListScreen extends StatefulWidget {
-  final ScrollController? scrollController;
-
-  const NoteListScreen({Key? key, this.scrollController}) : super(key: key);
+  const NoteListScreen({Key? key}) : super(key: key);
 
   @override
   _NoteListScreenState createState() => _NoteListScreenState();
 }
 
 class _NoteListScreenState extends State<NoteListScreen> {
+  final controller = PageController(viewportFraction: 0.8);
+
+  int selectedIndex = 0;
+
   @override
   void initState() {
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      NotePreferences.loadNoteListView();
-    });
-
     Provider.of<NoteProvider>(context, listen: false).showAllNotes();
     super.initState();
   }
@@ -38,6 +36,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                     SliverAppBar(
+                      elevation: 5,
                       floating: true,
                       forceElevated: innerBoxIsScrolled,
                       centerTitle: true,
@@ -50,11 +49,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             onPressed: () => showSearch(
                                 context: context,
                                 delegate: CustomSearchDelegate())),
-                        IconButton(
-                            icon: Icon(Icons.more_vert, size: 29),
-                            onPressed: () => NoteFilterBottomSheet
-                                .buildNoteFilterBottomSheet(
-                                    context: context, provider: provider)),
                       ],
                       title: Text(
                         provider.setTitle(),
@@ -62,49 +56,47 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                     ),
                   ],
-              body: Container(
-                  decoration: BoxDecoration(
-                      color: Color(0xffeeeeee),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15))),
-                  child: provider.noteList.isEmpty
-                      ? Container(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'images/empty_note_icon.png',
-                                height: 150,
-                                color: Colors.grey,
-                              ),
-                              Text('No note added',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 18)),
-                            ],
-                          ),
-                        )
-                      : Center(
-                          child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListView.builder(
-                                  controller: widget.scrollController,
-                                  physics: BouncingScrollPhysics(),
-                                  itemCount: provider.noteList
-                                      .where((element) =>
-                                          element.dateCreated == DateTime.now())
-                                      .length,
-                                  itemBuilder: (ctx, i) {
-                                    final note = provider.noteList[i];
-
-                                    return NoteList(
-                                        note: note, provider: provider);
-                                  })),
-                        ))),
+              body: Column(
+                children: [
+                  CategoryCards(
+                    onPageChanged: (value) =>
+                        setState(() => selectedIndex = value),
+                    selectedIndex: selectedIndex,
+                    controller: controller,
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xffeeeeee),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15))),
+                        child: provider.noteList.isEmpty
+                            ? EmptyNoteBody()
+                            : Center(
+                                child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ListView.builder(
+                                        physics: BouncingScrollPhysics(),
+                                        itemCount: provider.noteList
+                                            .where((element) =>
+                                                element.category ==
+                                                category[selectedIndex])
+                                            .length,
+                                        itemBuilder: (ctx, i) {
+                                          final note = provider.noteList[i];
+                                          return NoteList(
+                                              note: note, provider: provider);
+                                        })),
+                              )),
+                  ),
+                ],
+              )),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: FloatingActionButton(
+              backgroundColor: const Color(0xff0f044c),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (ctx) => NewNoteScreen()));

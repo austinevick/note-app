@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fox_note_app/screens/bottom_navigation_screen.dart';
 import 'package:fox_note_app/screens/note_list_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
             appBarTheme: AppBarTheme(backgroundColor: const Color(0xff0f044c)),
             scaffoldBackgroundColor: const Color(0xff0f044c),
             primaryColor: const Color(0xff0f044c)),
-        home: NoteListScreen(),
+        home: BottomNavigationScreen(),
       ),
     );
   }

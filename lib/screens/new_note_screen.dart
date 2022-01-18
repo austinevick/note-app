@@ -1,14 +1,11 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/components/note_form_field.dart';
 import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
-import 'package:fox_note_app/utils/note_prefs.dart';
 import 'package:fox_note_app/utils/random_colors.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
@@ -20,7 +17,8 @@ class NewNoteScreen extends StatefulWidget {
 }
 
 class _NewNoteScreenState extends State<NewNoteScreen> {
-  List<String> category = ['Personal', 'Work', 'Business'];
+  final controller = ScrollController();
+
   String selectedCategory = 'Personal';
   var titleController = new TextEditingController();
   var contentController = new TextEditingController();
@@ -28,14 +26,13 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
   FocusNode focusNode = FocusNode();
   Random random = new Random();
   int index = 0;
-
+  bool isExpanded = false;
   void changeIndex() {
     setState(() => index = random.nextInt(colors.length));
   }
 
   @override
   void initState() {
-    NotePreferences.loadNoteBgColor();
     init();
     super.initState();
   }
@@ -58,20 +55,72 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
             return true;
           },
           child: Scaffold(
-            appBar: PreferredSize(
-                child: buildAppBar(provider),
-                preferredSize: const Size(60, 60)),
-            body: Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15))),
-              child: NoteFormField(
-                  titleController: titleController,
-                  contentController: contentController,
-                  note: widget.note),
+            body: Column(
+              children: [
+                buildAppBar(provider),
+                AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    child: !isExpanded
+                        ? const SizedBox.shrink()
+                        : Container(
+                            height: 45,
+                            width: double.infinity,
+                            child: ListView(
+                              controller: controller,
+                              scrollDirection: Axis.horizontal,
+                              children: List.generate(
+                                category.length,
+                                (i) => GestureDetector(
+                                  onTap: () {
+                                    setState(
+                                        () => selectedCategory = category[i]);
+                                    print(selectedCategory);
+                                  },
+                                  child: AnimatedContainer(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: selectedCategory == category[i]
+                                            ? Colors.blue.shade200
+                                                .withOpacity(0.2)
+                                            : Colors.white,
+                                        border: Border.all(
+                                            color:
+                                                selectedCategory == category[i]
+                                                    ? const Color(0xff0795ff)
+                                                    : Colors.grey),
+                                      ),
+                                      height: 45,
+                                      width: 85,
+                                      child: Text(
+                                        category[i],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            color:
+                                                selectedCategory == category[i]
+                                                    ? const Color(0xff0795ff)
+                                                    : Colors.grey),
+                                      ),
+                                      duration:
+                                          const Duration(milliseconds: 400)),
+                                ),
+                              ),
+                            ),
+                          )),
+                Expanded(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15))),
+                    child: NoteFormField(
+                        titleController: titleController,
+                        contentController: contentController,
+                        note: widget.note),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -79,46 +128,6 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
     );
   }
 
-  Widget buildBottomSheet() => Container(
-        height: 100,
-        child: Column(
-          children: [
-            Text('Category'),
-            Expanded(
-              child: GridView.builder(
-                itemCount: category.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
-                itemBuilder: (context, i) => GestureDetector(
-                  onTap: () => setState(() => selectedCategory = category[i]),
-                  child: AnimatedContainer(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: selectedCategory == category[i]
-                            ? Colors.blue.shade200.withOpacity(0.2)
-                            : Colors.white,
-                        border: Border.all(
-                            color: selectedCategory == category[i]
-                                ? const Color(0xff0795ff)
-                                : Colors.grey),
-                      ),
-                      height: 45,
-                      width: 85,
-                      child: Text(
-                        category[i],
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            color: selectedCategory == category[i]
-                                ? const Color(0xff0795ff)
-                                : Colors.grey),
-                      ),
-                      duration: const Duration(milliseconds: 400)),
-                ),
-              ),
-            )
-          ],
-        ),
-      );
   String shareNote() {
     if (widget.note == null)
       return "${titleController.text}\n${contentController.text}";
@@ -132,6 +141,7 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
     final note = new Note(
         title: titleController.text,
         content: contentController.text,
+        category: selectedCategory,
         isImportant: isImportant,
         dateCreated: DateTime.now());
     if (widget.note != null) {
@@ -163,8 +173,7 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
         IconButton(
             icon:
                 Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 28),
-            onPressed: () => showBarModalBottomSheet(
-                context: context, builder: (ctx) => buildBottomSheet())),
+            onPressed: () => setState(() => isExpanded = !isExpanded)),
       ],
     );
   }
