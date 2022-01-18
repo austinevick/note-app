@@ -28,9 +28,7 @@ class NoteFormField extends StatelessWidget {
               cursorWidth: 1,
               controller: titleController,
               textCapitalization: TextCapitalization.sentences,
-              cursorColor: color,
-              style: TextStyle(
-                  fontSize: 18, color: color, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               decoration: InputDecoration(
                   hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
                   border: InputBorder.none,
@@ -41,8 +39,8 @@ class NoteFormField extends StatelessWidget {
               cursorWidth: 1,
               textCapitalization: TextCapitalization.sentences,
               cursorHeight: 26,
-              cursorColor: color,
-              style: TextStyle(fontSize: 19, color: color),
+              cursorColor: Colors.black,
+              style: TextStyle(fontSize: 19),
               controller: contentController,
               maxLines: null,
               decoration: InputDecoration(

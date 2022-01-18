@@ -17,16 +17,10 @@ class MyApp extends StatelessWidget {
         color: Color(0x0ff2c2b4b),
         debugShowCheckedModeBanner: false,
         title: 'Note App',
-        theme: ThemeData.light().copyWith(
-            appBarTheme: AppBarTheme(
-                backgroundColor: Colors.white,
-                iconTheme: IconThemeData(color: Colors.black),
-                toolbarTextStyle:
-                    TextTheme(headline6: TextStyle(color: Colors.black))
-                        .bodyText2,
-                titleTextStyle:
-                    TextTheme(headline6: TextStyle(color: Colors.black))
-                        .headline6)),
+        theme: ThemeData(
+            appBarTheme: AppBarTheme(backgroundColor: const Color(0xff0f044c)),
+            scaffoldBackgroundColor: const Color(0xff0f044c),
+            primaryColor: const Color(0xff0f044c)),
         home: NoteListScreen(),
       ),
     );

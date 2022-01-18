@@ -8,6 +8,7 @@ import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:fox_note_app/utils/note_prefs.dart';
 import 'package:fox_note_app/utils/random_colors.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
@@ -19,6 +20,8 @@ class NewNoteScreen extends StatefulWidget {
 }
 
 class _NewNoteScreenState extends State<NewNoteScreen> {
+  List<String> category = ['Personal', 'Work', 'Business'];
+  String selectedCategory = 'Personal';
   var titleController = new TextEditingController();
   var contentController = new TextEditingController();
   bool isImportant = false;
@@ -45,54 +48,6 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
     }
   }
 
-  buildBackgroundColor(BuildContext context) => showDialog(
-      context: context,
-      builder: (ctx) => Dialog(
-            child: Container(
-              height: 220,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('Background Color',
-                        style: Theme.of(context).textTheme.headline6),
-                  ),
-                  Divider(),
-                  Expanded(
-                    child: GridView(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4),
-                        children: List.generate(
-                            colors.length,
-                            (i) => MaterialButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    setState(() =>
-                                        NotePreferences.selectedColor = i);
-                                    NotePreferences.saveNoteBgColorToPref(
-                                        NotePreferences.selectedColor);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(8),
-                                      elevation: 3,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: colors[i],
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                      ),
-                                    ),
-                                  ),
-                                ))),
-                  ),
-                ],
-              ),
-            ),
-          ));
-
   @override
   Widget build(BuildContext context) {
     return Consumer<NoteProvider>(
@@ -103,20 +58,67 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
             return true;
           },
           child: Scaffold(
-              appBar: PreferredSize(
-                  child: buildAppBar(provider),
-                  preferredSize: const Size(60, 60)),
-              backgroundColor: colors[NotePreferences.selectedColor],
-              body: NoteFormField(
-                  selectedIndex: colors[NotePreferences.selectedColor],
+            appBar: PreferredSize(
+                child: buildAppBar(provider),
+                preferredSize: const Size(60, 60)),
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15))),
+              child: NoteFormField(
                   titleController: titleController,
                   contentController: contentController,
-                  note: widget.note)),
+                  note: widget.note),
+            ),
+          ),
         ),
       ),
     );
   }
 
+  Widget buildBottomSheet() => Container(
+        height: 100,
+        child: Column(
+          children: [
+            Text('Category'),
+            Expanded(
+              child: GridView.builder(
+                itemCount: category.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3),
+                itemBuilder: (context, i) => GestureDetector(
+                  onTap: () => setState(() => selectedCategory = category[i]),
+                  child: AnimatedContainer(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: selectedCategory == category[i]
+                            ? Colors.blue.shade200.withOpacity(0.2)
+                            : Colors.white,
+                        border: Border.all(
+                            color: selectedCategory == category[i]
+                                ? const Color(0xff0795ff)
+                                : Colors.grey),
+                      ),
+                      height: 45,
+                      width: 85,
+                      child: Text(
+                        category[i],
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: selectedCategory == category[i]
+                                ? const Color(0xff0795ff)
+                                : Colors.grey),
+                      ),
+                      duration: const Duration(milliseconds: 400)),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
   String shareNote() {
     if (widget.note == null)
       return "${titleController.text}\n${contentController.text}";
@@ -144,10 +146,10 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
   Widget buildAppBar(NoteProvider provider) {
     return AppBar(
       leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace, color: Colors.black, size: 28),
+          icon: Icon(Icons.keyboard_backspace, color: Colors.white, size: 28),
           onPressed: () => submit(provider)),
       title: Text(widget.note == null ? 'Add note' : 'Modify note',
-          style: Theme.of(context).textTheme.headline6),
+          style: TextStyle(color: Colors.white)),
       actions: [
         IconButton(
             icon: isImportant
@@ -157,12 +159,12 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
                   )
                 : Icon(Icons.star_border),
             onPressed: () => setState(() => isImportant = !isImportant)),
+        buildShareButton(),
         IconButton(
-            icon: Icon(Icons.color_lens),
-            onPressed: () {
-              buildBackgroundColor(context);
-            }),
-        buildShareButton()
+            icon:
+                Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 28),
+            onPressed: () => showBarModalBottomSheet(
+                context: context, builder: (ctx) => buildBottomSheet())),
       ],
     );
   }
@@ -171,7 +173,6 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
     return IconButton(
         icon: Icon(
           Icons.share,
-          color: Colors.black,
         ),
         onPressed: () async {
           await Share.share("${shareNote()}");

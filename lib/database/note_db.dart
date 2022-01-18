@@ -10,6 +10,7 @@ class NoteDatabaseHelper {
   static const String TITLE = 'title';
   static const String CONTENT = 'content';
   static const String ISIMPORTANT = 'isImportant';
+  static const String CATEGORY = 'category';
   static const String TABLE = 'note';
   static const String DATECREATED = 'dateCreated';
   static const String DB_NAME = 'note.db';
@@ -30,7 +31,7 @@ class NoteDatabaseHelper {
 
   createDatabase(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $TITLE TEXT, $DATECREATED TEXT, $CONTENT TEXT, $ISIMPORTANT BOOLEAN)');
+        'CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY AUTOINCREMENT, $TITLE TEXT, $DATECREATED TEXT, $CONTENT TEXT, $CATEGORY TEXT, $ISIMPORTANT BOOLEAN)');
   }
 
   Future<Note> saveNote(Note note) async {
@@ -44,7 +45,7 @@ class NoteDatabaseHelper {
     List<Map<String, dynamic>> map = await dbClient!.query(
       TABLE,
       orderBy: ISIMPORTANT,
-      columns: [ID, TITLE, CONTENT, DATECREATED, ISIMPORTANT],
+      columns: [ID, TITLE, CONTENT, DATECREATED, ISIMPORTANT, CATEGORY],
     );
 
     return map.map((e) => Note.fromMap(e)).toList();

@@ -34,7 +34,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return Consumer<NoteProvider>(
       builder: (context, provider, child) => SafeArea(
         child: Scaffold(
-          backgroundColor: Color(0xff2c2b4b),
           body: NestedScrollView(
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -44,59 +43,68 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       centerTitle: true,
                       actions: [
                         IconButton(
-                            icon: Icon(Icons.search, size: 27),
-                            onPressed: () =>
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => SearchScreen(),
-                                ))),
+                            icon: Icon(
+                              Icons.search,
+                              size: 29,
+                            ),
+                            onPressed: () => showSearch(
+                                context: context,
+                                delegate: CustomSearchDelegate())),
                         IconButton(
-                            icon: Icon(Icons.more_vert, size: 27),
+                            icon: Icon(Icons.more_vert, size: 29),
                             onPressed: () => NoteFilterBottomSheet
                                 .buildNoteFilterBottomSheet(
                                     context: context, provider: provider)),
                       ],
                       title: Text(
                         provider.setTitle(),
-                        style: Theme.of(context).textTheme.headline6,
+                        style: TextStyle(color: Colors.white, fontSize: 28),
                       ),
                     ),
                   ],
-              body: provider.noteList.isEmpty
-                  ? Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'images/empty_note_icon.png',
-                            height: 150,
-                            color: Colors.grey,
+              body: Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xffeeeeee),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15))),
+                  child: provider.noteList.isEmpty
+                      ? Container(
+                          alignment: Alignment.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'images/empty_note_icon.png',
+                                height: 150,
+                                color: Colors.grey,
+                              ),
+                              Text('No note added',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 18)),
+                            ],
                           ),
-                          Text('No note added',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 18)),
-                        ],
-                      ),
-                    )
-                  : Center(
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                              controller: widget.scrollController,
-                              physics: BouncingScrollPhysics(),
-                              itemCount: NoteProvider.selectedIndex == 0
-                                  ? provider.noteList.length
-                                  : provider.favouriteNoteList.length,
-                              itemBuilder: (ctx, i) {
-                                final note = provider.noteList[i];
+                        )
+                      : Center(
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListView.builder(
+                                  controller: widget.scrollController,
+                                  physics: BouncingScrollPhysics(),
+                                  itemCount: provider.noteList
+                                      .where((element) =>
+                                          element.dateCreated == DateTime.now())
+                                      .length,
+                                  itemBuilder: (ctx, i) {
+                                    final note = provider.noteList[i];
 
-                                return NoteList(note: note, provider: provider);
-                              })),
-                    )),
+                                    return NoteList(
+                                        note: note, provider: provider);
+                                  })),
+                        ))),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: FloatingActionButton(
-              backgroundColor: Color(0x0fffd6a02),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (ctx) => NewNoteScreen()));
