@@ -4,7 +4,7 @@ import 'package:fox_note_app/components/empty_note_body.dart';
 import 'package:fox_note_app/components/note_list.dart';
 import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
-import 'package:fox_note_app/screens/search_screen.dart';
+import 'package:fox_note_app/screens/note/custom_note_search_delegate.dart';
 import 'package:provider/provider.dart';
 
 import 'new_note_screen.dart';
@@ -36,9 +36,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               floatHeaderSlivers: true,
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                     SliverAppBar(
-                      elevation: 5,
                       floating: true,
-                      forceElevated: innerBoxIsScrolled,
                       centerTitle: true,
                       actions: [
                         IconButton(
@@ -48,7 +46,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             ),
                             onPressed: () => showSearch(
                                 context: context,
-                                delegate: CustomSearchDelegate())),
+                                delegate: CustomNoteSearchDelegate())),
                       ],
                       title: Text(
                         provider.setTitle(),

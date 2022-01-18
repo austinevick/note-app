@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
-import 'package:fox_note_app/screens/new_note_screen.dart';
+import 'package:fox_note_app/screens/note/new_note_screen.dart';
 import 'package:intl/intl.dart';
 
 import 'confirmation_widget.dart';

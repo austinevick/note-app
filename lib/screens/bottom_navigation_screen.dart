@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fox_note_app/screens/note_list_screen.dart';
+import 'package:fox_note_app/screens/note/note_list_screen.dart';
+import 'package:fox_note_app/screens/task/task_screen.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
   const BottomNavigationScreen({Key? key}) : super(key: key);
@@ -9,7 +10,7 @@ class BottomNavigationScreen extends StatefulWidget {
 }
 
 class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
-  final screens = [const NoteListScreen(), const Scaffold()];
+  final screens = [const NoteListScreen(), const TasksScreen()];
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {

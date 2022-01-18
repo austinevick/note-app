@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/screens/bottom_navigation_screen.dart';
-import 'package:fox_note_app/screens/note_list_screen.dart';
+import 'package:fox_note_app/screens/note/note_list_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/note_provider.dart';
