@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:fox_note_app/utils/constant.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback? onPressed;
+  final String? text;
 
-  final Color? color;
-  final Widget? child;
-  const CustomButton({Key? key, this.onPressed, this.color, this.child})
-      : super(key: key);
+  const CustomButton({Key? key, this.onPressed, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      child: Container(
-          height: 60,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: color, //    Color(0xff0020a9),
-              borderRadius: BorderRadius.circular(8)),
-          child: child),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: MaterialButton(
+        height: 50,
+        minWidth: double.infinity,
+        color: formColor,
+        onPressed: onPressed,
+        shape: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(8)),
+        child: Text(
+          text!,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+      ),
     );
   }
 }

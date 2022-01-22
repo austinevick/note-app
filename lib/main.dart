@@ -1,29 +1,30 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fox_note_app/screens/bottom_navigation_screen.dart';
-import 'package:fox_note_app/screens/note/note_list_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fox_note_app/provider/theme_provider.dart';
 
-import 'provider/note_provider.dart';
+import 'screens/landing_screen.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => NoteProvider(),
-      child: MaterialApp(
-        color: Color(0x0ff2c2b4b),
-        debugShowCheckedModeBanner: false,
-        title: 'Note App',
-        theme: ThemeData(
-            appBarTheme: AppBarTheme(backgroundColor: const Color(0xff0f044c)),
-            scaffoldBackgroundColor: const Color(0xff0f044c),
-            primaryColor: const Color(0xff0f044c)),
-        home: BottomNavigationScreen(),
-      ),
+    return Consumer(
+      builder: (context, watch, child) {
+        final theme = watch.watch(themeProvider);
+        return MaterialApp(
+          color: Color(0x0ff2c2b4b),
+          debugShowCheckedModeBanner: false,
+          title: 'Note App',
+          theme: theme.darkMode ? lightDark : darkMode,
+          home: LandingScreen(),
+        );
+      },
     );
   }
 }

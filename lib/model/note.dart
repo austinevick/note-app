@@ -33,6 +33,26 @@ class Note {
       dateCreated: DateTime.parse(map['dateCreated'] as String),
     );
   }
+  factory Note.fromSnapshot(Map<String, dynamic> map) {
+    return Note(
+        id: map['id'],
+        title: map['title'],
+        isImportant: map['isImportant'],
+        category: map['category'],
+        content: map['content'],
+        dateCreated: map['dateCreated']);
+  }
+
+  Map<String, dynamic> toSnapshot() {
+    return {
+      'id': this.id,
+      'title': this.title,
+      'content': this.content,
+      'category': this.category,
+      'isImportant': this.isImportant,
+      'dateCreated': this.dateCreated
+    };
+  }
 
   Map<String, dynamic> toMap() {
     return {

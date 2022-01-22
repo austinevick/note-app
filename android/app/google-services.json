@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "36743296424",
+    "project_id": "fox-note-c1aed",
+    "storage_bucket": "fox-note-c1aed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36743296424:android:6f7118f90866d22cef999d",
+        "android_client_info": {
+          "package_name": "com.augustinevictor.note_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36743296424-gcq5oa319u27ukvfloaa4teh341gevlj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjZi-Z8iUkMC0M8HsLsg0U8SKhzm0ykzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36743296424-gcq5oa319u27ukvfloaa4teh341gevlj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
