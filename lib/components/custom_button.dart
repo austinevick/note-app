@@ -4,8 +4,9 @@ import 'package:fox_note_app/utils/constant.dart';
 class CustomButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final String? text;
-
-  const CustomButton({Key? key, this.onPressed, this.text}) : super(key: key);
+  final Widget? child;
+  const CustomButton({Key? key, this.onPressed, this.text, this.child})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +20,13 @@ class CustomButton extends StatelessWidget {
         shape: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(8)),
-        child: Text(
-          text!,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-        ),
+        child: child == null
+            ? Text(
+                text!,
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              )
+            : child,
       ),
     );
   }

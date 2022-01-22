@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/components/custom_button.dart';
@@ -20,6 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool obscuredText = true;
   bool isLoading = false;
 
   Future signUp() async {
@@ -27,18 +27,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() => isLoading = true);
       final user = await AuthProvider.signUp(
           nameController.text, passwordController.text);
-      if (user.user != null) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (ctx) => const NoteListScreen()));
-      }
       setState(() => isLoading = false);
+      print(user.user!.email);
+      return user;
+      // if (user.user != null) {
+      //   Navigator.pushReplacement(context,
+      //       MaterialPageRoute(builder: (ctx) => const NoteListScreen()));
+
+      // }
+
     } on FirebaseAuthException catch (e) {
+      setState(() => isLoading = false);
+
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       print(e);
     }
   }
 
   SnackBar snackBar = SnackBar(content: const Text('Something went wrong'));
+  Widget get getIsLoadingState => isLoading
+      ? Center(child: CircularProgressIndicator())
+      : Text(
+          'CREATE ACCOUNT',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        );
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -89,23 +101,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         icon: Icons.lock_outline,
                         validator: (value) =>
                             value!.isEmpty ? 'Enter password' : null,
+                        obscureText: obscuredText,
+                        suffixIcon: IconButton(
+                            onPressed: () =>
+                                setState(() => obscuredText = !obscuredText),
+                            icon: !obscuredText
+                                ? Icon(Icons.visibility)
+                                : Icon(Icons.visibility_off)),
                       ),
                       CustomButton(
-                        text: 'CREATE ACCOUNT',
+                        child: getIsLoadingState,
                         onPressed: () {
-                          signUp();
-                          if (isLoading)
-                            showDialog(
-                                context: context,
-                                builder: (ctx) => Dialog(
-                                      child: Container(
-                                        height: 80,
-                                        width: 80,
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      ),
-                                    ));
+                          if (formKey.currentState!.validate()) signUp();
                         },
                       ),
                       const SizedBox(height: 10),

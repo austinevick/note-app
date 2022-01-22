@@ -14,6 +14,10 @@ class AuthProvider {
         email: email, password: password);
   }
 
+  static Future signInAnonymously() async {
+    await _auth.signInAnonymously();
+  }
+
   static Future<void> logOut() async {
     await _auth.signOut();
   }
