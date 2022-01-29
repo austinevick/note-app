@@ -31,20 +31,12 @@ class NoteFilterBottomSheet {
                               top: BorderSide(color: Colors.grey[300]!))),
                       width: double.infinity,
                       child: TextButton(
-                          onPressed: () {
-                            provider!.setIndexToZero();
-                            Navigator.of(context).pop();
-                          },
+                          onPressed: () {},
                           child: Text(
                             'All',
                             style: TextStyle(
-                                color: NoteProvider.selectedIndex == 0
-                                    ? Colors.green
-                                    : Colors.grey,
-                                fontSize: 18,
-                                fontWeight: NoteProvider.selectedIndex == 0
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
+                              fontSize: 18,
+                            ),
                           )),
                     ),
                   ),
@@ -56,20 +48,12 @@ class NoteFilterBottomSheet {
                               top: BorderSide(color: Colors.grey[300]!))),
                       width: double.infinity,
                       child: TextButton(
-                          onPressed: () {
-                            provider!.setIndexToOne();
-                            Navigator.of(context).pop();
-                          },
+                          onPressed: () {},
                           child: Text(
                             'Favourites',
                             style: TextStyle(
-                                color: NoteProvider.selectedIndex == 1
-                                    ? Colors.green
-                                    : Colors.grey,
-                                fontSize: 18,
-                                fontWeight: NoteProvider.selectedIndex == 1
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
+                              fontSize: 18,
+                            ),
                           )),
                     ),
                   ),

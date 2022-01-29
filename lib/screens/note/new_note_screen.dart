@@ -1,9 +1,12 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/components/note_form_field.dart';
+import 'package:fox_note_app/model/category.dart';
 import 'package:fox_note_app/model/note.dart';
+import 'package:fox_note_app/provider/auth_provider.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:fox_note_app/utils/random_colors.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +14,8 @@ import 'package:share/share.dart';
 
 class NewNoteScreen extends StatefulWidget {
   final Note? note;
-  const NewNoteScreen({Key? key, this.note}) : super(key: key);
+  final String? id;
+  const NewNoteScreen({Key? key, this.note, this.id}) : super(key: key);
   @override
   _NewNoteScreenState createState() => _NewNoteScreenState();
 }
@@ -19,13 +23,14 @@ class NewNoteScreen extends StatefulWidget {
 class _NewNoteScreenState extends State<NewNoteScreen> {
   final controller = ScrollController();
 
-  String selectedCategory = 'Personal';
+  Category? selectedCategory;
   var titleController = new TextEditingController();
   var contentController = new TextEditingController();
   bool isImportant = false;
   FocusNode focusNode = FocusNode();
   Random random = new Random();
   int index = 0;
+  late String id = '';
   bool isExpanded = false;
   void changeIndex() {
     setState(() => index = random.nextInt(colors.length));
@@ -42,90 +47,84 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
       contentController.text = widget.note!.content!;
       titleController.text = widget.note!.title!;
       isImportant = widget.note!.isImportant!;
+      id = widget.id!;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NoteProvider>(
-      builder: (context, provider, child) => SafeArea(
+    print(widget.id);
+    return SafeArea(
         child: WillPopScope(
-          onWillPop: () async {
-            submit(provider);
-            return true;
-          },
-          child: Scaffold(
-            body: Column(
-              children: [
-                buildAppBar(provider),
-                AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500),
-                    child: !isExpanded
-                        ? const SizedBox.shrink()
-                        : Container(
-                            height: 45,
-                            width: double.infinity,
-                            child: ListView(
-                              controller: controller,
-                              scrollDirection: Axis.horizontal,
-                              children: List.generate(
-                                category.length,
-                                (i) => GestureDetector(
-                                  onTap: () {
-                                    setState(
-                                        () => selectedCategory = category[i]);
-                                    print(selectedCategory);
-                                  },
-                                  child: AnimatedContainer(
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
+      onWillPop: () async {
+        submit();
+        return true;
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            buildAppBar(),
+            AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: !isExpanded
+                    ? const SizedBox.shrink()
+                    : Container(
+                        height: 45,
+                        width: double.infinity,
+                        child: ListView(
+                          controller: controller,
+                          scrollDirection: Axis.horizontal,
+                          children: List.generate(
+                            category.length,
+                            (i) => GestureDetector(
+                              onTap: () {
+                                // setState(() => selectedCategory = category[i]);
+                                // print(selectedCategory);
+                              },
+                              child: AnimatedContainer(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: selectedCategory == category[i]
+                                        ? Colors.blue.shade200.withOpacity(0.2)
+                                        : Colors.white,
+                                    border: Border.all(
                                         color: selectedCategory == category[i]
-                                            ? Colors.blue.shade200
-                                                .withOpacity(0.2)
-                                            : Colors.white,
-                                        border: Border.all(
-                                            color:
-                                                selectedCategory == category[i]
-                                                    ? const Color(0xff0795ff)
-                                                    : Colors.grey),
-                                      ),
-                                      height: 45,
-                                      width: 85,
-                                      child: Text(
-                                        category[i],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            color:
-                                                selectedCategory == category[i]
-                                                    ? const Color(0xff0795ff)
-                                                    : Colors.grey),
-                                      ),
-                                      duration:
-                                          const Duration(milliseconds: 400)),
-                                ),
-                              ),
+                                            ? const Color(0xff0795ff)
+                                            : Colors.grey),
+                                  ),
+                                  height: 45,
+                                  width: 85,
+                                  child: Text(
+                                    category[i],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        color: selectedCategory == category[i]
+                                            ? const Color(0xff0795ff)
+                                            : Colors.grey),
+                                  ),
+                                  duration: const Duration(milliseconds: 400)),
                             ),
-                          )),
-                Expanded(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15))),
-                    child: NoteFormField(
-                        titleController: titleController,
-                        contentController: contentController,
-                        note: widget.note),
-                  ),
-                ),
-              ],
+                          ),
+                        ),
+                      )),
+            Expanded(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15))),
+                child: NoteFormField(
+                    titleController: titleController,
+                    contentController: contentController,
+                    note: widget.note),
+              ),
             ),
-          ),
+          ],
         ),
       ),
-    );
+    ));
   }
 
   String shareNote() {
@@ -134,30 +133,30 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
     return "${widget.note!.title}\n${widget.note!.content}";
   }
 
-  void submit(NoteProvider provider) {
+  void submit() {
     Navigator.of(context).pop();
     if (titleController.text.isEmpty && contentController.text.isEmpty)
       Fluttertoast.showToast(msg: 'Empty notes are discarded');
     final note = new Note(
+        id: widget.id,
         title: titleController.text,
         content: contentController.text,
-        category: selectedCategory,
+        // category: selectedCategory,
         isImportant: isImportant,
-        dateCreated: DateTime.now());
+        userId: AuthProvider.user!.uid,
+        dateCreated: Timestamp.now());
     if (widget.note != null) {
-      note.id = widget.note!.id;
-      provider.updateNote(note);
+      NoteProvider.updateNote(note, id);
     } else {
-      provider.createNote(note);
+      NoteProvider.addNote(note);
     }
-    provider.showAllNotes();
   }
 
-  Widget buildAppBar(NoteProvider provider) {
+  Widget buildAppBar() {
     return AppBar(
       leading: IconButton(
           icon: Icon(Icons.keyboard_backspace, color: Colors.white, size: 28),
-          onPressed: () => submit(provider)),
+          onPressed: () => submit()),
       title: Text(widget.note == null ? 'Add note' : 'Modify note',
           style: TextStyle(color: Colors.white)),
       actions: [

@@ -1,67 +1,27 @@
-import 'package:flutter/cupertino.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:fox_note_app/database/note_db.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fox_note_app/model/note.dart';
-import 'package:fox_note_app/utils/note_prefs.dart';
+import 'package:fox_note_app/provider/auth_provider.dart';
+import 'package:fox_note_app/utils/constant.dart';
 
-class NoteProvider with ChangeNotifier {
-  List<Note> noteList = [];
-  NoteDatabaseHelper databaseHelper = new NoteDatabaseHelper();
-  static int selectedIndex = 0;
+class NoteProvider {
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final CollectionReference _mainCollection =
+      _firestore.collection(note).doc(AuthProvider.user!.uid).collection(notes);
 
-  bool shouldShowTitle = true;
-  onNoteTitleChange(bool shouldShowTitle) {
-    this.shouldShowTitle = shouldShowTitle;
-    notifyListeners();
+  static Stream<QuerySnapshot> getStream() {
+    return _mainCollection.snapshots();
   }
 
-  void setIndexToZero() {
-    selectedIndex = 0;
-    NotePreferences.saveNoteListViewToPref(selectedIndex);
-    notifyListeners();
-  }
-
-  setTitle() => selectedIndex == 0 ? 'All Notes' : 'Favourite';
-  void setIndexToOne() {
-    selectedIndex = 1;
-    NotePreferences.saveNoteListViewToPref(selectedIndex);
-    notifyListeners();
-  }
-
-  List<Note> get favouriteNoteList =>
-      noteList.where((note) => note.isImportant == true).toList();
-
-  void createNote(Note note) async {
+  static Future<void> addNote(Note note) async {
     if (note.title!.isEmpty && note.content!.isEmpty) return;
-    await databaseHelper.saveNote(note);
-    Fluttertoast.showToast(msg: 'Note added');
-    notifyListeners();
+    await _mainCollection.doc().set(note.toSnapshot());
   }
 
-  Future<List<Note>> showAllNotes() async {
-    Future<List<Note>> note = databaseHelper.getNotes();
-    await note.then((note) {
-      noteList = note;
-      notifyListeners();
-    });
-    return note;
+  static Future<void> deleteNote(String id) async {
+    await _mainCollection.doc(id).delete();
   }
 
-  void restoreNote(Note note) {
-    createNote(note);
-    showAllNotes();
-    notifyListeners();
-  }
-
-  void updateNote(Note note) {
-    databaseHelper.updateNote(note);
-    showAllNotes();
-    notifyListeners();
-  }
-
-  void deleteNote(int id) {
-    databaseHelper.deleteNote(id);
-    showAllNotes();
-    notifyListeners();
+  static Future<void> updateNote(Note note, String id) async {
+    await _mainCollection.doc(id).update(note.toSnapshot());
   }
 }

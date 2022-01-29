@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/components/custom_button.dart';
 import 'package:fox_note_app/components/custom_textfield.dart';
+import 'package:fox_note_app/model/user.dart';
 import 'package:fox_note_app/provider/auth_provider.dart';
 import 'package:fox_note_app/screens/authentication/signin_screen.dart';
+import 'package:fox_note_app/screens/bottom_navigation_screen.dart';
 import 'package:fox_note_app/screens/note/note_list_screen.dart';
 import 'package:fox_note_app/utils/constant.dart';
 
@@ -26,16 +28,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       setState(() => isLoading = true);
       final user = await AuthProvider.signUp(
-          nameController.text, passwordController.text);
+          emailController.text, passwordController.text);
+      final _user =
+          Users(fullname: nameController.text, email: emailController.text);
+      Users.addUsers(_user);
+      if (user.user != null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (ctx) => const BottomNavigationScreen()),
+            (r) => false);
+      }
       setState(() => isLoading = false);
       print(user.user!.email);
       return user;
-      // if (user.user != null) {
-      //   Navigator.pushReplacement(context,
-      //       MaterialPageRoute(builder: (ctx) => const NoteListScreen()));
-
-      // }
-
     } on FirebaseAuthException catch (e) {
       setState(() => isLoading = false);
 
@@ -46,7 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   SnackBar snackBar = SnackBar(content: const Text('Something went wrong'));
   Widget get getIsLoadingState => isLoading
-      ? Center(child: CircularProgressIndicator())
+      ? Center(child: CircularProgressIndicator(color: Colors.white))
       : Text(
           'CREATE ACCOUNT',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),

@@ -4,18 +4,20 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:fox_note_app/screens/note/new_note_screen.dart';
+import 'package:fox_note_app/utils/constant.dart';
 import 'package:intl/intl.dart';
 
 import 'confirmation_widget.dart';
 
 class NoteList extends StatelessWidget {
   final Note? note;
-  final NoteProvider? provider;
+  final String? documentID;
 
-  NoteList({Key? key, this.note, this.provider}) : super(key: key);
+  NoteList({Key? key, this.note, this.documentID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(documentID);
     return Entry.scale(
       delay: Duration(milliseconds: 100),
       duration: Duration(milliseconds: 200),
@@ -23,11 +25,10 @@ class NoteList extends StatelessWidget {
         padding: const EdgeInsets.all(2.0),
         child: MaterialButton(
           padding: EdgeInsets.zero,
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => NewNoteScreen(
-              note: note!,
-            ),
-          )),
+          onPressed: () => pushNavigation(
+            context,
+            NewNoteScreen(note: note!, id: documentID),
+          ),
           child: Card(
             shape: OutlineInputBorder(
                 borderSide: BorderSide.none,
@@ -104,7 +105,7 @@ class NoteList extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        DateFormat.yMMMd().format(note!.dateCreated!),
+                        DateFormat.yMMMd().format(note!.dateCreated!.toDate()),
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                       IconButton(
@@ -116,7 +117,7 @@ class NoteList extends StatelessWidget {
                             ConfirmationBottomSheet.buildBottomSheet(context,
                                 () {
                               Navigator.of(context).pop();
-                              provider!.deleteNote(note!.id!);
+                              NoteProvider.deleteNote(documentID!);
                               Fluttertoast.showToast(msg: 'Note deleted');
                             }, 'Delete Note', 'This note will be deleted');
                           })

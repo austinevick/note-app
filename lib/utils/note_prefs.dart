@@ -11,10 +11,10 @@ class NotePreferences {
     return await prefs.setInt(_keyNoteList, currentIndex);
   }
 
-  static Future loadNoteListView() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return NoteProvider.selectedIndex = prefs.getInt(_keyNoteList) ?? 0;
-  }
+  // static Future loadNoteListView() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   return NoteProvider.selectedIndex = prefs.getInt(_keyNoteList) ?? 0;
+  // }
 
   static Future saveNoteBgColorToPref(int currentIndex) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

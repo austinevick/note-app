@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fox_note_app/model/category.dart';
 import 'package:fox_note_app/model/note.dart';
 
 class CategoryCards extends StatelessWidget {

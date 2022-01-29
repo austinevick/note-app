@@ -1,22 +1,17 @@
-List<String> category = [
-  'Personal',
-  'Work',
-  'Business',
-  'Travel',
-  'Sermon',
-  'Sport'
-];
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Note {
-  int? id;
+  final String? id;
   final String? title;
   final String? content;
-  final DateTime? dateCreated;
+  final Timestamp? dateCreated;
   final String? category;
+  final String? userId;
   final bool? isImportant;
 
   Note(
-      {this.content,
+      {this.userId,
+      this.content,
       this.category,
       this.isImportant,
       this.dateCreated,
@@ -25,19 +20,10 @@ class Note {
 
   factory Note.fromMap(Map<String, dynamic> map) {
     return Note(
-      id: map['id'],
-      title: map['title'],
-      isImportant: map['isImportant'] == 0,
-      category: map['category'],
-      content: map['content'],
-      dateCreated: DateTime.parse(map['dateCreated'] as String),
-    );
-  }
-  factory Note.fromSnapshot(Map<String, dynamic> map) {
-    return Note(
         id: map['id'],
         title: map['title'],
         isImportant: map['isImportant'],
+        userId: map['userId'],
         category: map['category'],
         content: map['content'],
         dateCreated: map['dateCreated']);
@@ -48,20 +34,10 @@ class Note {
       'id': this.id,
       'title': this.title,
       'content': this.content,
+      'userId': this.userId,
       'category': this.category,
       'isImportant': this.isImportant,
       'dateCreated': this.dateCreated
-    };
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': this.id,
-      'title': this.title,
-      'content': this.content,
-      'category': this.category,
-      'isImportant': this.isImportant! ? 0 : 1,
-      'dateCreated': this.dateCreated?.toIso8601String(),
     };
   }
 

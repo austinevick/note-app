@@ -1,8 +1,10 @@
-class User {
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Users {
   final String? fullname;
   final String? email;
   final String? password;
-  User({
+  Users({
     this.fullname,
     this.email,
     this.password,
@@ -16,11 +18,17 @@ class User {
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  factory Users.fromMap(Map<String, dynamic> map) {
+    return Users(
       fullname: map['fullname'],
       email: map['email'],
       password: map['password'],
     );
+  }
+  static CollectionReference ref =
+      FirebaseFirestore.instance.collection('users');
+
+  static Future<void> addUsers(Users user) async {
+    await ref.add(user.toMap());
   }
 }
