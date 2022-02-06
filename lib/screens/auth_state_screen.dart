@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/provider/auth_provider.dart';
+import 'package:fox_note_app/screens/bottom_navigation_screen.dart';
 import 'package:fox_note_app/screens/landing_screen.dart';
 import 'package:fox_note_app/screens/note/note_list_screen.dart';
 
@@ -17,7 +18,7 @@ class AuthStateScreen extends StatelessWidget {
         if (!snapshot.hasData) {
           return LandingScreen();
         } else if (snapshot.hasData) {
-          return NoteListScreen();
+          return BottomNavigationScreen();
         } else {
           return Center(
             child: CircularProgressIndicator(),

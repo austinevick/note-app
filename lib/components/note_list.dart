@@ -1,6 +1,7 @@
 import 'package:entry/entry.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fox_note_app/model/category.dart';
 import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:fox_note_app/screens/note/new_note_screen.dart';
@@ -10,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'confirmation_widget.dart';
 
 class NoteList extends StatelessWidget {
-  final Note? note;
+  final Category? note;
   final String? documentID;
 
   NoteList({Key? key, this.note, this.documentID}) : super(key: key);
@@ -27,7 +28,7 @@ class NoteList extends StatelessWidget {
           padding: EdgeInsets.zero,
           onPressed: () => pushNavigation(
             context,
-            NewNoteScreen(note: note!, id: documentID),
+            NewNoteScreen(note: note!.note!, id: documentID),
           ),
           child: Card(
             shape: OutlineInputBorder(
@@ -36,7 +37,7 @@ class NoteList extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                note!.title!.isEmpty
+                note!.note!.title!.isEmpty
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -50,7 +51,7 @@ class NoteList extends StatelessWidget {
                                   height: 8,
                                   width: 8,
                                   decoration: BoxDecoration(
-                                      color: note!.isImportant!
+                                      color: note!.note!.isImportant!
                                           ? Color(0x0fffd6a02)
                                           : Colors.grey,
                                       borderRadius: BorderRadius.circular(50)),
@@ -58,7 +59,7 @@ class NoteList extends StatelessWidget {
                               ),
                               SizedBox(width: 8),
                               Expanded(
-                                child: Text(note!.title!,
+                                child: Text(note!.note!.title!,
                                     maxLines: 1,
                                     style: TextStyle(
                                         fontSize: 18,
@@ -71,7 +72,7 @@ class NoteList extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      note!.title!.isNotEmpty
+                      note!.note!.title!.isNotEmpty
                           ? Container()
                           : Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -79,7 +80,7 @@ class NoteList extends StatelessWidget {
                                 height: 8,
                                 width: 8,
                                 decoration: BoxDecoration(
-                                    color: note!.isImportant!
+                                    color: note!.note!.isImportant!
                                         ? Color(0x0fffd6a02)
                                         : Colors.grey,
                                     borderRadius: BorderRadius.circular(50)),
@@ -88,11 +89,11 @@ class NoteList extends StatelessWidget {
                       SizedBox(width: 8),
                       Expanded(
                         child: Padding(
-                          padding: note!.title!.isNotEmpty
+                          padding: note!.note!.title!.isNotEmpty
                               ? const EdgeInsets.only(left: 22)
                               : const EdgeInsets.only(left: 0),
-                          child: Text(note!.content!,
-                              maxLines: note!.title!.isEmpty ? 4 : 2,
+                          child: Text(note!.note!.content!,
+                              maxLines: note!.note!.title!.isEmpty ? 4 : 2,
                               style: TextStyle(fontSize: 17.5)),
                         ),
                       ),
@@ -105,7 +106,8 @@ class NoteList extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        DateFormat.yMMMd().format(note!.dateCreated!.toDate()),
+                        DateFormat.yMMMd()
+                            .format(note!.note!.dateCreated!.toDate()),
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                       IconButton(

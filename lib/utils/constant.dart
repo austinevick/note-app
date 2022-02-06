@@ -7,6 +7,8 @@ final formColor = const Color(0xff003cc0);
 
 final note = 'note';
 final notes = 'notes';
+final category = 'category';
+final categories = 'categories';
 
 void pushNavigation(BuildContext context, Widget child) =>
     Navigator.push(context, MaterialPageRoute(builder: (context) => child));

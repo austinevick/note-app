@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fox_note_app/model/category.dart';
 import 'package:fox_note_app/model/note.dart';
+import 'package:fox_note_app/provider/category_provider.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:fox_note_app/provider/theme_provider.dart';
 import 'package:fox_note_app/screens/auth_state_screen.dart';
@@ -38,6 +41,53 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: StreamBuilder<QuerySnapshot>(
+              stream: CategoryProvider.getCategoryStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return buildNoteCategory(snapshot);
+              }),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              final category = Category(
+                  name: 'Sport', note: Note(title: 'Hello', category: 'Sport'));
+              CategoryProvider.addCategory(category);
+            },
+            child: Icon(Icons.add),
+          )),
+    );
+  }
+
+  Widget buildNoteCategory(AsyncSnapshot<QuerySnapshot>? snapshot) {
+    return ListView.builder(
+      itemCount: snapshot!.data!.docs.length,
+      itemBuilder: (context, i) {
+        var noteInfo = snapshot.data!.docs[i].data() as Map<String, dynamic>;
+        final c = Category.fromMap(noteInfo);
+        return Card(
+          child: ListTile(
+            title: Text(c.name!),
+            onTap: () => showModalBottomSheet(
+                context: context,
+                builder: (ctx) => Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(
+                            5,
+                            (i) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(c.note!.title!),
+                                )),
+                      ),
+                    )),
+          ),
+        );
+      },
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/components/note_list.dart';
-import 'package:fox_note_app/model/note.dart';
+import 'package:fox_note_app/model/category.dart';
 
 class NoteListFromSnapshot extends StatelessWidget {
   final AsyncSnapshot<QuerySnapshot>? snapshot;
@@ -18,7 +18,7 @@ class NoteListFromSnapshot extends StatelessWidget {
               itemBuilder: (ctx, i) {
                 var noteInfo =
                     snapshot!.data!.docs[i].data() as Map<String, dynamic>;
-                final note = Note.fromMap(noteInfo);
+                final note = Category.fromMap(noteInfo);
                 String id = snapshot!.data!.docs[i].id;
                 return NoteList(note: note, documentID: id);
               })),

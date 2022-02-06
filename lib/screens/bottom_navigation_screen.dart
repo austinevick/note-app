@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fox_note_app/screens/note/note_list_screen.dart';
+import 'package:fox_note_app/screens/settings_screen.dart';
 import 'package:fox_note_app/screens/task/task_screen.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
@@ -14,7 +15,6 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     const NoteListScreen(),
     const TasksScreen(),
     Scaffold(),
-    Scaffold()
   ];
   int currentIndex = 0;
   @override
@@ -43,10 +43,6 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
                   selectedIcon: Icon(Icons.money_outlined),
                   icon: Icon(Icons.money),
                   label: 'Expenses'),
-              NavigationDestination(
-                  selectedIcon: Icon(Icons.settings_outlined),
-                  icon: Icon(Icons.settings),
-                  label: 'Settings'),
             ],
           ),
         ),

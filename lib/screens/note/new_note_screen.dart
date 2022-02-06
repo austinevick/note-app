@@ -9,7 +9,6 @@ import 'package:fox_note_app/model/note.dart';
 import 'package:fox_note_app/provider/auth_provider.dart';
 import 'package:fox_note_app/provider/note_provider.dart';
 import 'package:fox_note_app/utils/random_colors.dart';
-import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 class NewNoteScreen extends StatefulWidget {
@@ -21,9 +20,11 @@ class NewNoteScreen extends StatefulWidget {
 }
 
 class _NewNoteScreenState extends State<NewNoteScreen> {
+  static List<Category> categoryList = [];
+
   final controller = ScrollController();
 
-  Category? selectedCategory;
+  String? selectedCategory = categoryList.first.name;
   var titleController = new TextEditingController();
   var contentController = new TextEditingController();
   bool isImportant = false;
@@ -53,7 +54,6 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
     return SafeArea(
         child: WillPopScope(
       onWillPop: () async {
@@ -75,30 +75,34 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
                           controller: controller,
                           scrollDirection: Axis.horizontal,
                           children: List.generate(
-                            category.length,
+                            categoryList.length,
                             (i) => GestureDetector(
                               onTap: () {
-                                // setState(() => selectedCategory = category[i]);
-                                // print(selectedCategory);
+                                setState(() =>
+                                    selectedCategory = categoryList[i].name);
+                                print(selectedCategory);
                               },
                               child: AnimatedContainer(
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: selectedCategory == category[i]
+                                    color: selectedCategory ==
+                                            categoryList[i].name
                                         ? Colors.blue.shade200.withOpacity(0.2)
                                         : Colors.white,
                                     border: Border.all(
-                                        color: selectedCategory == category[i]
+                                        color: selectedCategory ==
+                                                categoryList[i].name
                                             ? const Color(0xff0795ff)
                                             : Colors.grey),
                                   ),
                                   height: 45,
                                   width: 85,
                                   child: Text(
-                                    category[i],
+                                    categoryList[i].name!,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w800,
-                                        color: selectedCategory == category[i]
+                                        color: selectedCategory ==
+                                                categoryList[i].name
                                             ? const Color(0xff0795ff)
                                             : Colors.grey),
                                   ),
@@ -137,14 +141,16 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
     Navigator.of(context).pop();
     if (titleController.text.isEmpty && contentController.text.isEmpty)
       Fluttertoast.showToast(msg: 'Empty notes are discarded');
-    final note = new Note(
-        id: widget.id,
-        title: titleController.text,
-        content: contentController.text,
-        // category: selectedCategory,
-        isImportant: isImportant,
-        userId: AuthProvider.user!.uid,
-        dateCreated: Timestamp.now());
+    final note = new Category(
+        name: selectedCategory,
+        note: Note(
+            id: widget.id,
+            title: titleController.text,
+            content: contentController.text,
+            category: selectedCategory,
+            isImportant: isImportant,
+            userId: AuthProvider.user!.uid,
+            dateCreated: Timestamp.now()));
     if (widget.note != null) {
       NoteProvider.updateNote(note, id);
     } else {
